@@ -78,13 +78,15 @@ export async function POST(request: NextRequest) {
       }),
     });
 
+    const rawText = await response.text();
+    console.error('MiniMax raw response:', rawText);
+
     if (!response.ok) {
-      const error = await response.text();
-      console.error('MiniMax API error:', response.status, error);
+      console.error('MiniMax API error:', response.status, rawText);
       throw new Error(`API error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = JSON.parse(rawText);
 
     // Extract text from Anthropic response format
     let reply = '';
@@ -94,6 +96,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!reply) {
+      console.error('No reply in response:', JSON.stringify(data));
       throw new Error('No reply in API response');
     }
 
