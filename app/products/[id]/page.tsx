@@ -1,11 +1,34 @@
 'use client';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getProduct } from '@/lib/products';
+import { useEffect, useState } from 'react';
+import { supabase, Product } from '@/lib/supabase';
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const product = getProduct(params.id as string);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProduct() {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', params.id as string)
+        .single();
+      setProduct(data);
+      setLoading(false);
+    }
+    fetchProduct();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-cream-50 flex items-center justify-center">
+        <p className="text-charcoal-700">Loading...</p>
+      </main>
+    );
+  }
 
   if (!product) {
     return (
@@ -51,7 +74,7 @@ export default function ProductDetailPage() {
             <div>
               <p className="text-gold-500 text-sm tracking-wider uppercase mb-2">{product.category}</p>
               <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-charcoal-900 mb-2">{product.name}</h1>
-              <p className="text-charcoal-700">{product.nameEn}</p>
+              <p className="text-charcoal-700">{product.name_en}</p>
             </div>
 
             {/* Rating */}
@@ -94,7 +117,7 @@ export default function ProductDetailPage() {
             <div className="bg-white border border-cream-200 rounded-2xl p-5">
               <p className="text-sm text-charcoal-700 flex items-center gap-2">
                 <span>🔒</span>
-                All orders shipped in plain packaging. Delivery only shows "Daily Necessities".
+                All orders shipped in plain packaging. Delivery only shows &quot;Daily Necessities&quot;.
               </p>
             </div>
           </div>

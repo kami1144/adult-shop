@@ -1,11 +1,31 @@
 'use client';
 import Link from 'next/link';
-import { products, categories } from '@/lib/products';
 import ProductCard from '@/components/ProductCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase, Product } from '@/lib/supabase';
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('全部');
+  const [categories, setCategories] = useState<string[]>(['全部']);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setProducts(data);
+        const cats = ['全部', ...Array.from(new Set(data.map((p: Product) => p.category)))];
+        setCategories(cats);
+      }
+      setLoading(false);
+    }
+    fetchProducts();
+  }, []);
 
   const filteredProducts = selectedCategory === '全部'
     ? products
@@ -40,6 +60,11 @@ export default function ProductsPage() {
           ))}
         </div>
 
+        {/* Loading */}
+        {loading ? (
+          <div className="text-center py-20 text-charcoal-700">Loading...</div>
+        ) : (
+          <>
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProducts.map((product) => (
@@ -51,6 +76,8 @@ export default function ProductsPage() {
           <div className="text-center py-20 text-charcoal-700">
             No products in this category yet.
           </div>
+        )}
+          </>
         )}
       </div>
     </main>

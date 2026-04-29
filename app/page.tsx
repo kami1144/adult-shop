@@ -1,9 +1,23 @@
 'use client';
 import Link from 'next/link';
-import { products } from '@/lib/products';
 import ProductCard from '@/components/ProductCard';
+import { supabase, Product } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    async function fetchFeatured() {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .limit(6);
+      if (data) setProducts(data);
+    }
+    fetchFeatured();
+  }, []);
+
   return (
     <main className="min-h-screen bg-cream-50 text-charcoal-900">
       {/* Hero Section */}
@@ -18,7 +32,7 @@ export default function Home() {
             <span className="text-sm font-medium">100% Private Shipping</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-semibold tracking-wide text-charcoal-900 mb-6">
-            Elegant &amp;&nbsp;
+            Elegant &nbsp;
             <span className="text-gold-500">Private</span>
           </h1>
           <p className="text-lg sm:text-xl text-charcoal-700 max-w-2xl mx-auto leading-relaxed mb-10">
@@ -72,7 +86,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {products.slice(0, 6).map((product) => (
+            {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Product } from '@/lib/products';
+import { Product } from '@/lib/supabase';
 
 interface Props {
   product: Product;
@@ -29,7 +29,7 @@ export default function ProductCard({ product }: Props) {
       <div className="p-6">
         <p className="text-xs text-gold-500 mb-1 tracking-wider uppercase">{product.category}</p>
         <h3 className="text-lg font-semibold text-charcoal-900 mb-1">{product.name}</h3>
-        <p className="text-sm text-charcoal-700 mb-3">{product.nameEn}</p>
+        <p className="text-sm text-charcoal-700 mb-3">{product.name_en}</p>
 
         {/* Rating */}
         <div className="flex items-center gap-2 mb-4">
