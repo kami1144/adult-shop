@@ -45,7 +45,7 @@ const welcomeMessages: Record<AIType, string> = {
     'こんにちは！AI客服です💬\n商品について、配送についてなど、ご購入に関するご質問をお気軽にどうぞ',
 };
 
-type Position = 'bottom-right' | 'bottom-left' | 'bottom-right-2';
+type Position = 'bottom-right' | 'bottom-left' | 'bottom-right-2' | 'bottom-center' | 'bottom-center-1' | 'bottom-center-2' | 'bottom-center-3';
 
 interface AIChatWidgetProps {
   type: AIType;
@@ -228,6 +228,22 @@ export default function AIChatWidget({
         .ai-bottom-left {
           left: 20px;
         }
+        .ai-bottom-center {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .ai-bottom-center-1 {
+          left: calc(50% - 140px);
+          transform: translateX(-50%);
+        }
+        .ai-bottom-center-2 {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .ai-bottom-center-3 {
+          left: calc(50% + 140px);
+          transform: translateX(-50%);
+        }
         .ai-toggle-btn {
           width: 60px;
           height: 60px;
@@ -262,13 +278,14 @@ export default function AIChatWidget({
           justify-content: center;
         }
         .ai-panel {
-          position: absolute;
-          bottom: 70px;
-          right: 0;
+          position: fixed;
+          bottom: 170px;
+          left: 50%;
+          transform: translateX(-50%);
           width: 360px;
           max-width: calc(100vw - 40px);
           height: 400px;
-          max-height: calc(100vh - 200px);
+          max-height: calc(100vh - 300px);
           background: white;
           border-radius: 16px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -360,9 +377,10 @@ export default function AIChatWidget({
           color: white;
         }
         .ai-input-area {
-          position: absolute;
-          bottom: 70px;
-          right: 0;
+          position: fixed;
+          bottom: 90px;
+          left: 50%;
+          transform: translateX(-50%);
           width: 360px;
           max-width: calc(100vw - 40px);
           padding: 12px 16px;
@@ -415,10 +433,16 @@ export default function AIChatWidget({
           .ai-panel,
           .ai-input-area {
             width: calc(100vw - 30px);
-            right: -10px;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
           }
           .ai-panel {
             height: 60vh;
+            bottom: 160px;
+          }
+          .ai-input-area {
+            bottom: 80px;
           }
         }
       `}</style>

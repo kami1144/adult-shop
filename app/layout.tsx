@@ -20,9 +20,9 @@ export default function RootLayout({
       <body className="bg-cream-50 text-charcoal-900 min-h-screen antialiased">
         <Header />
         <main>{children}</main>
-        <AIQuizWidget type="quiz" position="bottom-right" />
-        <AIPrivacyWidget type="privacy" position="bottom-left" />
-        <AISupportWidget type="support" position="bottom-right-2" />
+        <AIQuizWidget type="quiz" position="bottom-center-1" />
+        <AIPrivacyWidget type="privacy" position="bottom-center-2" />
+        <AISupportWidget type="support" position="bottom-center-3" />
       </body>
     </html>
   );
