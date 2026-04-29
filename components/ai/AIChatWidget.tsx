@@ -183,7 +183,7 @@ export default function AIChatWidget({
           </div>
 
           {/* Input */}
-          <div className="ai-input-area">
+          <div className="ai-input-area" style={{ zIndex: 10, position: 'relative' }}>
             <textarea
               ref={textareaRef}
               value={input}
@@ -192,6 +192,7 @@ export default function AIChatWidget({
               placeholder={config.placeholder}
               rows={3}
               className="ai-textarea"
+              style={{ zIndex: 11, position: 'relative', minHeight: '60px' }}
             />
             <button
               onClick={sendMessage}
@@ -307,6 +308,8 @@ export default function AIChatWidget({
           flex-direction: column;
           gap: 12px;
           background: #f8f9fa;
+          position: relative;
+          z-index: 1;
         }
         .ai-message {
           display: flex;
@@ -361,6 +364,8 @@ export default function AIChatWidget({
           display: flex;
           gap: 10px;
           align-items: flex-end;
+          position: relative;
+          z-index: 10;
         }
         .ai-textarea {
           flex: 1;
@@ -371,8 +376,11 @@ export default function AIChatWidget({
           font-family: inherit;
           resize: none;
           max-height: 120px;
+          min-height: 60px;
           line-height: 1.5;
           outline: none;
+          position: relative;
+          z-index: 11;
         }
         .ai-textarea:focus {
           border-color: #e94560;
