@@ -45,7 +45,7 @@ const welcomeMessages: Record<AIType, string> = {
     'こんにちは！AI客服です💬\n商品について、配送についてなど、ご購入に関するご質問をお気軽にどうぞ',
 };
 
-type Position = 'bottom-right' | 'bottom-left' | 'bottom-right-2' | 'bottom-center' | 'bottom-center-1' | 'bottom-center-2' | 'bottom-center-3';
+type Position = 'bottom-center-1' | 'bottom-center-2' | 'bottom-center-3';
 
 interface AIChatWidgetProps {
   type: AIType;
@@ -54,7 +54,7 @@ interface AIChatWidgetProps {
 
 export default function AIChatWidget({
   type,
-  position = 'bottom-right',
+  position = 'bottom-center-2',
 }: AIChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -124,7 +124,7 @@ export default function AIChatWidget({
 
   return (
     <div
-      className={`ai-widget-root ai-bottom-${position}`}
+      className={`ai-widget-root ai-${position}`}
       data-type={type}
     >
       {/* Toggle Button */}
@@ -137,54 +137,52 @@ export default function AIChatWidget({
         <span style={{ fontSize: '24px' }}>{config.icon}</span>
       </button>
 
-      {/* Chat Panel */}
+      {/* Chat Panel - includes header, messages and input */}
       {isOpen && (
-        <>
-          <div className="ai-panel">
-            {/* Header */}
-            <div className="ai-panel-header">
-              <div>
-                <div className="ai-panel-title">{config.title}</div>
-                <div className="ai-panel-subtitle">{config.subtitle}</div>
+        <div className="ai-panel">
+          {/* Header */}
+          <div className="ai-panel-header">
+            <div>
+              <div className="ai-panel-title">{config.title}</div>
+              <div className="ai-panel-subtitle">{config.subtitle}</div>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="ai-close-btn">
+              ×
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="ai-messages">
+            <div className="ai-message ai-bot">
+              <div className="ai-avatar">AI</div>
+              <div className="ai-bubble">
+                <p style={{ whiteSpace: 'pre-wrap' }}>
+                  {welcomeMessages[type]}
+                </p>
               </div>
-              <button onClick={() => setIsOpen(false)} className="ai-close-btn">
-                ×
-              </button>
             </div>
 
-            {/* Messages */}
-            <div className="ai-messages">
+            {messages.map((msg, i) => (
+              <div key={i} className={`ai-message ai-${msg.role}`}>
+                {msg.role === 'bot' && <div className="ai-avatar">AI</div>}
+                <div className="ai-bubble">
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
               <div className="ai-message ai-bot">
                 <div className="ai-avatar">AI</div>
                 <div className="ai-bubble">
-                  <p style={{ whiteSpace: 'pre-wrap' }}>
-                    {welcomeMessages[type]}
-                  </p>
+                  <p>•••</p>
                 </div>
               </div>
-
-              {messages.map((msg, i) => (
-                <div key={i} className={`ai-message ai-${msg.role}`}>
-                  {msg.role === 'bot' && <div className="ai-avatar">AI</div>}
-                  <div className="ai-bubble">
-                    <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
-                  </div>
-                </div>
-              ))}
-
-              {isTyping && (
-                <div className="ai-message ai-bot">
-                  <div className="ai-avatar">AI</div>
-                  <div className="ai-bubble">
-                    <p>•••</p>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area - Independent floating below panel */}
+          {/* Input - fixed at bottom inside panel */}
           <div className="ai-input-area">
             <textarea
               ref={textareaRef}
@@ -208,7 +206,7 @@ export default function AIChatWidget({
               </svg>
             </button>
           </div>
-        </>
+        </div>
       )}
 
       <style jsx>{`
@@ -218,19 +216,6 @@ export default function AIChatWidget({
           z-index: 99999;
           font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont,
             sans-serif;
-        }
-        .ai-bottom-right {
-          right: 20px;
-        }
-        .ai-bottom-right-2 {
-          right: 90px;
-        }
-        .ai-bottom-left {
-          left: 20px;
-        }
-        .ai-bottom-center {
-          left: 50%;
-          transform: translateX(-50%);
         }
         .ai-bottom-center-1 {
           left: calc(50% - 140px);
@@ -278,14 +263,14 @@ export default function AIChatWidget({
           justify-content: center;
         }
         .ai-panel {
-          position: fixed;
-          bottom: 170px;
+          position: absolute;
+          bottom: 70px;
           left: 50%;
           transform: translateX(-50%);
           width: 360px;
           max-width: calc(100vw - 40px);
-          height: 400px;
-          max-height: calc(100vh - 300px);
+          height: 500px;
+          max-height: calc(100vh - 140px);
           background: white;
           border-radius: 16px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -377,20 +362,13 @@ export default function AIChatWidget({
           color: white;
         }
         .ai-input-area {
-          position: fixed;
-          bottom: 90px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 360px;
-          max-width: calc(100vw - 40px);
           padding: 12px 16px;
           background: white;
-          border-radius: 16px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+          border-top: 1px solid #e0e0e0;
           display: flex;
           gap: 10px;
           align-items: flex-end;
-          z-index: 98;
+          flex-shrink: 0;
         }
         .ai-textarea {
           flex: 1;
@@ -400,7 +378,7 @@ export default function AIChatWidget({
           font-size: 14px;
           font-family: inherit;
           resize: none;
-          max-height: 120px;
+          max-height: 100px;
           min-height: 60px;
           line-height: 1.5;
           outline: none;
@@ -430,19 +408,9 @@ export default function AIChatWidget({
           cursor: not-allowed;
         }
         @media (max-width: 480px) {
-          .ai-panel,
-          .ai-input-area {
-            width: calc(100vw - 30px);
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-          }
           .ai-panel {
-            height: 60vh;
-            bottom: 160px;
-          }
-          .ai-input-area {
-            bottom: 80px;
+            width: calc(100vw - 30px);
+            height: 70vh;
           }
         }
       `}</style>
