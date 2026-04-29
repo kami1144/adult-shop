@@ -103,9 +103,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ reply });
   } catch (error) {
     console.error('AI Chat error:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({
       reply:
         '申し訳ありません。一時的なエラーが発生しました。しばらく経ってから再度お試しください。',
+      debug_error: message,
     });
   }
 }
