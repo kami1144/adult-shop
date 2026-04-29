@@ -6,3 +6,6 @@ out/
 *.html
 !.nojekyll
 .vercel
+node_modules
+.next
+package-lock.json
