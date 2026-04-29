@@ -96,8 +96,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (!reply) {
-      console.error('No reply in response:', JSON.stringify(data));
-      throw new Error('No reply in API response');
+      console.error('No reply in response:', JSON.stringify(data).substring(0, 500));
+      return NextResponse.json({
+        reply: '申し訳ありません。一時的なエラーが発生しました。',
+        debug_error: `No reply - content: ${JSON.stringify(data.content)?.substring(0, 200)}`,
+      });
     }
 
     return NextResponse.json({ reply });
