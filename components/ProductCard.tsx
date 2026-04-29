@@ -9,51 +9,48 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden card-hover group">
-      <div className="h-2 bg-gradient-to-r from-orange-500 to-amber-500" />
-
-      <div className="p-6">
-        <div className="aspect-square bg-zinc-800 rounded-2xl mb-6 overflow-hidden relative">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          {product.discreet && (
-            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-xs text-zinc-300 px-2 py-1 rounded-full">
-              🔒 隐私发货
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <p className="text-xs text-orange-400 mb-1">{product.category}</p>
-            <h3 className="text-xl font-semibold">{product.name}</h3>
-            <p className="text-zinc-400 text-sm">{product.nameEn}</p>
+    <div className="bg-white rounded-3xl overflow-hidden card-hover border border-cream-200 group">
+      {/* Image */}
+      <div className="aspect-square bg-gradient-to-br from-cream-100 to-cream-200 relative overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        {product.discreet && (
+          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-xs text-charcoal-700 px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+            <span>🔒</span>
+            <span>Private</span>
           </div>
-
-          {/* Rating */}
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">★</span>
-            <span className="text-sm font-medium">{product.rating}</span>
-            <span className="text-zinc-500 text-sm">({product.reviews}件评价)</span>
-          </div>
-
-          {/* Price */}
-          <div className="text-2xl font-bold text-white">
-            ¥{product.price.toLocaleString()}
-          </div>
-        </div>
+        )}
       </div>
 
-      <div className="border-t border-zinc-800 p-6 pt-0">
-        <Link
-          href={`/products/${product.id}`}
-          className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3.5 rounded-2xl text-center transition-all active:scale-[0.985]"
-        >
-          查看详情
-        </Link>
+      {/* Info */}
+      <div className="p-6">
+        <p className="text-xs text-gold-500 mb-1 tracking-wider uppercase">{product.category}</p>
+        <h3 className="text-lg font-semibold text-charcoal-900 mb-1">{product.name}</h3>
+        <p className="text-sm text-charcoal-700 mb-3">{product.nameEn}</p>
+
+        {/* Rating */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex text-gold-400 text-sm">
+            {'★'.repeat(Math.floor(product.rating))}
+          </div>
+          <span className="text-xs text-charcoal-700">({product.reviews})</span>
+        </div>
+
+        {/* Price */}
+        <div className="flex justify-between items-center">
+          <div className="text-xl font-semibold text-charcoal-900">
+            ¥{product.price.toLocaleString()}
+          </div>
+          <Link
+            href={`/products/${product.id}`}
+            className="morandi-btn px-5 py-2.5 rounded-full text-sm font-medium"
+          >
+            View
+          </Link>
+        </div>
       </div>
     </div>
   );

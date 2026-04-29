@@ -2,46 +2,46 @@
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2">联系我们</h1>
-        <p className="text-zinc-400 mb-8">商务合作或咨询，请填写以下表单</p>
+    <main className="min-h-screen bg-cream-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+        <h1 className="text-3xl sm:text-4xl font-serif font-semibold mb-2 text-center">Contact Us</h1>
+        <p className="text-charcoal-700 text-center mb-10">For business inquiries or questions</p>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8">
+        <div className="bg-white rounded-2xl p-8 border border-cream-200 max-w-xl mx-auto">
           <form className="space-y-6">
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">您的姓名</label>
-              <input type="text" placeholder="请输入姓名" className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500" />
+              <label className="text-sm text-charcoal-700 mb-2 block">Your Name</label>
+              <input type="text" placeholder="Enter your name" className="w-full bg-cream-50 border border-cream-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 transition-colors" />
             </div>
 
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">邮箱地址</label>
-              <input type="email" placeholder="example@email.com" className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500" />
+              <label className="text-sm text-charcoal-700 mb-2 block">Email</label>
+              <input type="email" placeholder="example@email.com" className="w-full bg-cream-50 border border-cream-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 transition-colors" />
             </div>
 
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">咨询类型</label>
-              <select className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500">
-                <option>商品咨询</option>
-                <option>订单查询</option>
-                <option>商务合作</option>
-                <option>其他</option>
+              <label className="text-sm text-charcoal-700 mb-2 block">Inquiry Type</label>
+              <select className="w-full bg-cream-50 border border-cream-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 transition-colors">
+                <option>Product Inquiry</option>
+                <option>Order Status</option>
+                <option>Business Cooperation</option>
+                <option>Other</option>
               </select>
             </div>
 
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">留言内容</label>
-              <textarea rows={5} placeholder="请详细描述您的需求..." className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500 resize-none" />
+              <label className="text-sm text-charcoal-700 mb-2 block">Message</label>
+              <textarea rows={5} placeholder="Please describe your needs in detail..." className="w-full bg-cream-50 border border-cream-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 transition-colors resize-none" />
             </div>
 
-            <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 rounded-2xl transition-all">
-              发送消息
+            <button type="submit" className="w-full morandi-btn py-4 rounded-2xl font-semibold text-white">
+              Send Message
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-zinc-800">
-            <p className="text-sm text-zinc-400 text-center">
-              我们通常在1-2个工作日内回复
+          <div className="mt-8 pt-6 border-t border-cream-200">
+            <p className="text-sm text-charcoal-700 text-center">
+              We typically respond within 1-2 business days
             </p>
           </div>
         </div>

@@ -12,26 +12,27 @@ export default function ProductsPage() {
     : products.filter((p) => p.category === selectedCategory);
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
+    <main className="min-h-screen bg-cream-50 text-charcoal-900">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-zinc-800 py-8">
+      <div className="bg-gradient-to-r from-cream-100 to-rose-100 py-12 sm:py-16 border-b border-cream-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">商品列表</h1>
-          <p className="text-zinc-400">共 {filteredProducts.length} 件商品</p>
+          <p className="text-gold-500 text-sm tracking-wider uppercase mb-2">Collection</p>
+          <h1 className="text-3xl sm:text-4xl font-serif font-semibold mb-2">All Products</h1>
+          <p className="text-charcoal-700">{filteredProducts.length} items</p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap gap-3 mb-10">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
                 selectedCategory === cat
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  ? 'bg-charcoal-900 text-white'
+                  : 'bg-white text-charcoal-700 border border-cream-200 hover:border-gold-400 hover:text-gold-500'
               }`}
             >
               {cat}
@@ -40,15 +41,15 @@ export default function ProductsPage() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
         {filteredProducts.length === 0 && (
-          <div className="text-center py-20 text-zinc-400">
-            该分类暂无商品
+          <div className="text-center py-20 text-charcoal-700">
+            No products in this category yet.
           </div>
         )}
       </div>
