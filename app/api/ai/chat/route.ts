@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || '';
-const MINIMAX_API_URL = 'https://api.minimax.chat/v1/text/chatcompletion_pro';
+const MINIMAX_API_URL = 'https://api.minimaxi.com/anthropic/v1/messages';
 
 const SYSTEM_PROMPTS = {
-  quiz: `あなたは日本の成人用品ECサイトのAI選品助手です。
-お客様のニーズに合わせて、最適な商品を見つけてください。
-商品カテゴリ：男性用玩具（マスターベーションツール等）、女性用玩具（バイブレーター等）、セックススーツ、LOTUSシリーズ、body-safe silicone商品など。
+  quiz: `你是日本成人用品EC网站的AI选品助手。
+客户のニーズに合わせて、最適な商品を見つけてください。
+商品カテゴリ：男性用玩具、女性用玩具、セックススーツ、LOTUSシリーズ、body-safe silicone商品など。
 プライバシー保護を徹底し、品名の特定は全て英語商品名で行い、日本語では「商品」とだけ表記してください。
 会話は親しみやすくしながらも品のある会話を心がけてください。
 必ず最後に「他还为您提供」+ 具体商品名を1つ以上提案してください。`,
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     if (!message?.trim()) {
       return NextResponse.json(
-        { error: 'メッセージが空です' },
+        { reply: 'メッセージが空です' },
         { status: 400 }
       );
     }
@@ -37,26 +37,30 @@ export async function POST(request: NextRequest) {
     const validTypes = ['quiz', 'privacy', 'support'];
     const aiType = validTypes.includes(type) ? type : 'support';
 
-    // Build messages array
-    const messages: { role: 'system' | 'user' | 'assistant'; content: string }[] = [
-      { role: 'system', content: SYSTEM_PROMPTS[aiType as keyof typeof SYSTEM_PROMPTS] },
-    ];
+    // Build messages array (Anthropic format)
+    const messages: { role: 'user'; content: string }[] = [];
 
-    // Add history (max 20 messages)
+    // Add system prompt as first user message with instruction
+    messages.push({
+      role: 'user',
+      content: SYSTEM_PROMPTS[aiType as keyof typeof SYSTEM_PROMPTS],
+    });
+
+    // Add history
     const recentHistory = history.slice(-20);
     for (const h of recentHistory) {
       messages.push({
-        role: h.sender === 'user' ? 'user' : 'assistant',
-        content: h.content,
+        role: 'user',
+        content: (h.sender === 'user' ? '客户: ' : 'AI: ') + h.content,
       });
     }
+
+    // Add current message
     messages.push({ role: 'user', content: message });
 
-    // Call MiniMax API
+    // Call MiniMax API (Anthropic-compatible)
     if (!MINIMAX_API_KEY) {
-      return NextResponse.json({
-        reply: getMockReply(aiType, message),
-      });
+      return NextResponse.json({ reply: getMockReply(aiType, message) });
     }
 
     const response = await fetch(MINIMAX_API_URL, {
@@ -64,9 +68,10 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${MINIMAX_API_KEY}`,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'MiniMax-Text-01',
+        model: 'MiniMax-M2.7',
         messages,
         max_tokens: 500,
         temperature: 0.7,
@@ -74,32 +79,37 @@ export async function POST(request: NextRequest) {
     });
 
     if (!response.ok) {
-      throw new Error(`MiniMax API error: ${response.status}`);
+      const error = await response.text();
+      console.error('MiniMax API error:', response.status, error);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content?.trim();
+
+    // Extract text from Anthropic response format
+    let reply = '';
+    if (data.content && Array.isArray(data.content)) {
+      const textBlock = data.content.find((b: { type: string }) => b.type === 'text');
+      reply = textBlock?.text || '';
+    }
 
     if (!reply) {
-      throw new Error('Invalid API response');
+      throw new Error('No reply in API response');
     }
 
     return NextResponse.json({ reply });
   } catch (error) {
     console.error('AI Chat error:', error);
-    return NextResponse.json(
-      {
-        reply:
-          '申し訳ありません。一時的なエラーが発生しました。しばらく経ってから再度お試しください。',
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      reply:
+        '申し訳ありません。一時的なエラーが発生しました。しばらく経ってから再度お試しください。',
+    });
   }
 }
 
 function getMockReply(type: string, lastMessage: string): string {
   const mockReplies: Record<string, string> = {
-    quiz: `ありがとうございました！您说的需求，我来分析一下。
+    quiz: `ありがとうございました！需求我明白了。
 
 根据您的描述，推荐关注 LOTUS 系列的敏感振动器——采用 body-safe silicone，专门设计用于敏感肌肤。
 
@@ -113,7 +123,7 @@ function getMockReply(type: string, lastMessage: string): string {
 ✓ 専用隐私包装，外包装不显示任何商品信息
 ✓ 配送单上只写「書類」或「선물」
 ✓ 可在备注中填写要求，包装内完全中性
-✓ 付款明细可设置为其他店名（如「SANUTO」等）
+✓ 付款明细可设置为其他店名
 
 如有更多问题，请随时询问！`,
 
@@ -121,7 +131,7 @@ function getMockReply(type: string, lastMessage: string): string {
 
 的一般質問：
 • 配送期間：通常3-5営業日
-• 运费：700円（Orders over 5000円 包邮）
+• 运费：700円（5000円以上包邮）
 • 退货：商品到着後7日以内可（未开封）
 
 如需更详细的帮助，请联系：
