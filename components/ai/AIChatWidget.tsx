@@ -139,51 +139,53 @@ export default function AIChatWidget({
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="ai-panel">
-          {/* Header */}
-          <div className="ai-panel-header">
-            <div>
-              <div className="ai-panel-title">{config.title}</div>
-              <div className="ai-panel-subtitle">{config.subtitle}</div>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="ai-close-btn">
-              ×
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className="ai-messages">
-            <div className="ai-message ai-bot">
-              <div className="ai-avatar">AI</div>
-              <div className="ai-bubble">
-                <p style={{ whiteSpace: 'pre-wrap' }}>
-                  {welcomeMessages[type]}
-                </p>
+        <>
+          <div className="ai-panel">
+            {/* Header */}
+            <div className="ai-panel-header">
+              <div>
+                <div className="ai-panel-title">{config.title}</div>
+                <div className="ai-panel-subtitle">{config.subtitle}</div>
               </div>
+              <button onClick={() => setIsOpen(false)} className="ai-close-btn">
+                ×
+              </button>
             </div>
 
-            {messages.map((msg, i) => (
-              <div key={i} className={`ai-message ai-${msg.role}`}>
-                {msg.role === 'bot' && <div className="ai-avatar">AI</div>}
-                <div className="ai-bubble">
-                  <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
-                </div>
-              </div>
-            ))}
-
-            {isTyping && (
+            {/* Messages */}
+            <div className="ai-messages">
               <div className="ai-message ai-bot">
                 <div className="ai-avatar">AI</div>
                 <div className="ai-bubble">
-                  <p>•••</p>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>
+                    {welcomeMessages[type]}
+                  </p>
                 </div>
               </div>
-            )}
-            <div ref={messagesEndRef} />
+
+              {messages.map((msg, i) => (
+                <div key={i} className={`ai-message ai-${msg.role}`}>
+                  {msg.role === 'bot' && <div className="ai-avatar">AI</div>}
+                  <div className="ai-bubble">
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                  </div>
+                </div>
+              ))}
+
+              {isTyping && (
+                <div className="ai-message ai-bot">
+                  <div className="ai-avatar">AI</div>
+                  <div className="ai-bubble">
+                    <p>•••</p>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
-          {/* Input */}
-          <div className="ai-input-area" style={{ zIndex: 10, position: 'relative' }}>
+          {/* Input Area - Independent floating below panel */}
+          <div className="ai-input-area">
             <textarea
               ref={textareaRef}
               value={input}
@@ -192,7 +194,6 @@ export default function AIChatWidget({
               placeholder={config.placeholder}
               rows={3}
               className="ai-textarea"
-              style={{ zIndex: 11, position: 'relative', minHeight: '60px' }}
             />
             <button
               onClick={sendMessage}
@@ -207,7 +208,7 @@ export default function AIChatWidget({
               </svg>
             </button>
           </div>
-        </div>
+        </>
       )}
 
       <style jsx>{`
@@ -240,6 +241,7 @@ export default function AIChatWidget({
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
           transition: all 0.3s;
           position: relative;
+          z-index: 100;
         }
         .ai-toggle-btn:hover {
           background: #c73e54;
@@ -265,14 +267,15 @@ export default function AIChatWidget({
           right: 0;
           width: 360px;
           max-width: calc(100vw - 40px);
-          height: 500px;
-          max-height: calc(100vh - 120px);
+          height: 400px;
+          max-height: calc(100vh - 200px);
           background: white;
           border-radius: 16px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          z-index: 99;
         }
         .ai-panel-header {
           background: linear-gradient(135deg, #e94560, #c73e54);
@@ -281,6 +284,7 @@ export default function AIChatWidget({
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
+          flex-shrink: 0;
         }
         .ai-panel-title {
           font-size: 16px;
@@ -308,8 +312,6 @@ export default function AIChatWidget({
           flex-direction: column;
           gap: 12px;
           background: #f8f9fa;
-          position: relative;
-          z-index: 1;
         }
         .ai-message {
           display: flex;
@@ -358,14 +360,19 @@ export default function AIChatWidget({
           color: white;
         }
         .ai-input-area {
+          position: absolute;
+          bottom: 70px;
+          right: 0;
+          width: 360px;
+          max-width: calc(100vw - 40px);
           padding: 12px 16px;
           background: white;
-          border-top: 1px solid #e0e0e0;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
           display: flex;
           gap: 10px;
           align-items: flex-end;
-          position: relative;
-          z-index: 10;
+          z-index: 98;
         }
         .ai-textarea {
           flex: 1;
@@ -379,8 +386,6 @@ export default function AIChatWidget({
           min-height: 60px;
           line-height: 1.5;
           outline: none;
-          position: relative;
-          z-index: 11;
         }
         .ai-textarea:focus {
           border-color: #e94560;
@@ -407,9 +412,12 @@ export default function AIChatWidget({
           cursor: not-allowed;
         }
         @media (max-width: 480px) {
-          .ai-panel {
+          .ai-panel,
+          .ai-input-area {
             width: calc(100vw - 30px);
             right: -10px;
+          }
+          .ai-panel {
             height: 60vh;
           }
         }
