@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || '';
+const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || 'sk-cp-z0pQ-l2ZgtqB1hC1VWHeJxZb7dB-M2RvWIWkdG3Be5Gq9mrv8EWbHMnB1NTedYZzX7M8ZmVTTeasNgDMQCuWLcd3KMpCqeXk-k4CxlN72Si2leILToqbHME';
 const MINIMAX_API_URL = 'https://api.minimaxi.com/anthropic/v1/messages';
 
 const SYSTEM_PROMPTS = {
