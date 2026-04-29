@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { useState, useEffect } from 'react';
-import { supabase, Product } from '@/lib/supabase';
+import { Product } from '@/lib/supabase';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -11,20 +11,17 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProducts() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (!error && data) {
-        setProducts(data);
-        const cats = ['全部', ...Array.from(new Set(data.map((p: Product) => p.category)))];
-        setCategories(cats);
-      }
-      setLoading(false);
-    }
-    fetchProducts();
+    fetch('/api/products')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+          const cats = ['全部', ...Array.from(new Set(data.map((p: Product) => p.category)))];
+          setCategories(cats);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const filteredProducts = selectedCategory === '全部'
@@ -33,7 +30,6 @@ export default function ProductsPage() {
 
   return (
     <main className="min-h-screen bg-cream-50 text-charcoal-900">
-      {/* Header */}
       <div className="bg-gradient-to-r from-cream-100 to-rose-100 py-12 sm:py-16 border-b border-cream-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <p className="text-gold-500 text-sm tracking-wider uppercase mb-2">Collection</p>
@@ -43,7 +39,6 @@ export default function ProductsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        {/* Category Filter */}
         <div className="flex flex-wrap gap-3 mb-10">
           {categories.map((cat) => (
             <button
@@ -60,23 +55,20 @@ export default function ProductsPage() {
           ))}
         </div>
 
-        {/* Loading */}
         {loading ? (
           <div className="text-center py-20 text-charcoal-700">Loading...</div>
         ) : (
           <>
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20 text-charcoal-700">
-            No products in this category yet.
-          </div>
-        )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-20 text-charcoal-700">
+                No products in this category yet.
+              </div>
+            )}
           </>
         )}
       </div>

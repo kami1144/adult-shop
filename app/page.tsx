@@ -1,21 +1,18 @@
 'use client';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { supabase, Product } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
+import { Product } from '@/lib/supabase';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchFeatured() {
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .limit(6);
-      if (data) setProducts(data);
-    }
-    fetchFeatured();
+    fetch('/api/products')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setProducts(data.slice(0, 6));
+      });
   }, []);
 
   return (
