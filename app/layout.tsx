@@ -1,6 +1,9 @@
 'use client';
 import './globals.css';
 import Header from '@/components/Header';
+import AIQuizWidget from '@/components/ai/AIChatWidget';
+import AIPrivacyWidget from '@/components/ai/AIChatWidget';
+import AISupportWidget from '@/components/ai/AIChatWidget';
 
 export default function RootLayout({
   children,
@@ -17,6 +20,9 @@ export default function RootLayout({
       <body className="bg-cream-50 text-charcoal-900 min-h-screen antialiased">
         <Header />
         <main>{children}</main>
+        <AIQuizWidget type="quiz" position="bottom-right" />
+        <AIPrivacyWidget type="privacy" position="bottom-left" />
+        <AISupportWidget type="support" position="bottom-right-2" />
       </body>
     </html>
   );
