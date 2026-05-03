@@ -6,13 +6,16 @@ import { Product } from '@/lib/supabase';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     fetch('/api/products')
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data.slice(0, 6));
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -29,8 +32,7 @@ export default function Home() {
             <span className="text-sm font-medium">100% Private Shipping</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-semibold tracking-wide text-charcoal-900 mb-6">
-            Elegant &nbsp;
-            <span className="text-gold-500">Private</span>
+            Discover Your Style
           </h1>
           <p className="text-lg sm:text-xl text-charcoal-700 max-w-2xl mx-auto leading-relaxed mb-10">
             Discreet packaging. Japan direct. Your privacy, our promise.
@@ -53,7 +55,7 @@ export default function Home() {
             <div className="text-center">
               <div className="w-14 h-14 bg-rose-100 rounded-2xl mx-auto mb-4 flex items-center justify-center text-2xl">🔒</div>
               <h3 className="font-semibold mb-1">100% Discreet</h3>
-              <p className="text-sm text-charcoal-700">Plain packaging, no敏感信息</p>
+              <p className="text-sm text-charcoal-700">Plain packaging, no product info</p>
             </div>
             <div className="text-center">
               <div className="w-14 h-14 bg-gold-100 rounded-2xl mx-auto mb-4 flex items-center justify-center text-2xl">✈️</div>
@@ -82,11 +84,38 @@ export default function Home() {
               <span>→</span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-white rounded-3xl overflow-hidden border border-cream-200 animate-pulse">
+                  <div className="aspect-square bg-gradient-to-br from-cream-100 to-cream-200" />
+                  <div className="p-6">
+                    <div className="h-3 w-16 bg-cream-200 rounded mb-2" />
+                    <div className="h-5 w-32 bg-cream-200 rounded mb-1" />
+                    <div className="h-4 w-24 bg-cream-200 rounded mb-3" />
+                    <div className="h-4 w-20 bg-cream-200 rounded mb-4" />
+                    <div className="flex justify-between">
+                      <div className="h-6 w-20 bg-cream-200 rounded" />
+                      <div className="h-10 w-20 bg-cream-200 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-charcoal-700 text-lg mb-4">No products available yet.</p>
+              <Link href="/products" className="morandi-btn px-6 py-3 rounded-full font-medium">
+                Browse All
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -96,7 +125,7 @@ export default function Home() {
           <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-white mb-4">
             First Time Customer?
           </h2>
-          <p className="text-charcoal-700 text-lg max-w-xl mx-auto mb-10">
+          <p className="text-white/80 text-lg max-w-xl mx-auto mb-10">
             7-day hassle-free returns. Full customer support. Your satisfaction is our priority.
           </p>
           <Link href="/products" className="morandi-btn inline-block px-10 py-4 rounded-full font-medium">
